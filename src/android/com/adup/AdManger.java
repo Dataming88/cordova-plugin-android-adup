@@ -215,14 +215,10 @@ public class AdManger extends CordovaPlugin {
     }
 
     private void requestPermission() {
-        //cordova.requestPermission(this,100,Manifest.per++ission.READ_PHONE_STATE);
+
         cordova.requestPermissions(this, 100, new String[]{
                 Manifest.permission.READ_PHONE_STATE,
-                // Manifest.permission.READ_EXTERNAL_STORAGE,
-                // Manifest.permission.ACCESS_NETWORK_STATE
         });
-        //requestPermissions(100);
-        //requestPermissions(100);
     }
 
     @Override
@@ -235,21 +231,15 @@ public class AdManger extends CordovaPlugin {
                         // 权限授予了
                         if (Manifest.permission.READ_PHONE_STATE.equals(permissions[i])) {
                             Log.d(TAG, "onRequestPermissionsResult: READ_PHONE_STATE GRANTED");
-                            // 执行与 READ_PHONE_STATE 相关的操作
+
                         }
-//                        else if (Manifest.permission.READ_EXTERNAL_STORAGE.equals(permissions[i])) {
-//                            Log.d(TAG, "onRequestPermissionsResult: READ_EXTERNAL_STORAGE GRANTED");
-//                            // 执行与 READ_EXTERNAL_STORAGE 相关的操作
-//                        }
+
                     } else {
                         // 权限被拒绝
                         if (Manifest.permission.READ_PHONE_STATE.equals(permissions[i])) {
                             Log.d(TAG, "onRequestPermissionsResult: READ_PHONE_STATE REFUSED");
-                            // 处理拒绝 READ_PHONE_STATE 的情况
                         }
-//                        else if (Manifest.permission.READ_EXTERNAL_STORAGE.equals(permissions[i])) {
-//                            // 处理拒绝 READ_EXTERNAL_STORAGE 的情况
-//                        }
+
                     }
                 }
                 break;
@@ -288,9 +278,6 @@ public class AdManger extends CordovaPlugin {
                 _container.setVisibility(View.GONE);
                 // 将广告容器添加到 WebView 之后
                 ((ViewGroup) webView.getView().getParent()).addView(_container);
-                // 添加容器到根视图中
-//        rootView.addView(container);
-//        debugViewHierarchy(rootView);
             }
         });
     }
@@ -349,7 +336,7 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onError(int i, String s) {
                 Log.i("UMAdDemo", "reward load fail: errCode: " + i + ", errMsg: " + s);
-				triggerEvent("RewardAdLoadFailed", adError.getFullErrorInfo());
+				triggerEvent("RewardAdLoadFailed", "reward load fail: errCode: " + i + ", errMsg: " + s);
             }
 
             @Override
