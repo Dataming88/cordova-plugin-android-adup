@@ -9,14 +9,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import com.anythink.core.api.ATAdInfo;
-import com.anythink.core.api.ATSDK;
-import com.anythink.core.api.AdError;
-import com.anythink.rewardvideo.api.ATRewardVideoAd;
-import com.anythink.rewardvideo.api.ATRewardVideoListener;
-import com.anythink.splashad.api.ATSplashAd;
-import com.anythink.splashad.api.ATSplashAdExtraInfo;
-import com.anythink.splashad.api.ATSplashAdListener;
+
+import com.bytedance.sdk.openadsdk.TTAdConfig;
+import com.bytedance.sdk.openadsdk.TTAdManager;
+import com.bytedance.sdk.openadsdk.TTAdSdk;
+import com.bytedance.sdk.openadsdk.TTCustomController;
+import com.bytedance.sdk.openadsdk.mediation.init.MediationPrivacyConfig;
+import com.bytedance.sdk.openadsdk.AdSlot;
+import com.bytedance.sdk.openadsdk.TTAdConstant;
+import com.bytedance.sdk.openadsdk.TTAdNative;
+import com.bytedance.sdk.openadsdk.TTRewardVideoAd;
 
 import org.apache.cordova.CallbackContext;
 import org.apache.cordova.CordovaArgs;
@@ -26,31 +28,152 @@ import org.json.JSONException;
 
 public class AdManger extends CordovaPlugin {
     private static final String TAG = "AdupAd";
-    private ATSplashAd _splashAd;
-    private ATRewardVideoAd _rewardAd;
     private Context _context;
     private Activity _activity;
     private FrameLayout _container;
     private String _splashAdPlacementId;
-    private String _rewardAdPlacementId;
+    private String _rewardAdCodeId;
+	
+	public static TTAdManager get() {
+        return TTAdSdk.getAdManager();
+    }
+	
+	private static void doInit(Context context,String appId) {
+        if (!sInit) {
+            //setp1.1：初始化SDK
+            TTAdSdk.init(context, buildConfig(context,appId));
+            //setp1.2：启动SDK
+            TTAdSdk.start(new TTAdSdk.Callback() {
+                @Override
+                public void success() {
+                    Log.i(TAG, "SDK初始化success: " + TTAdSdk.isSdkReady());
+                }
 
-    public void initTaku(String appId, String appKey, String splashAdPlacementId, String rewardAdPlacementId) {
-        ATSDK.init(_context, appId, appKey);
-        ATSDK.start();
-        _splashAdPlacementId = splashAdPlacementId;
-        _rewardAdPlacementId = rewardAdPlacementId;
-        _splashAd = new ATSplashAd(_context, _splashAdPlacementId, new ATSplashExListenerImpl());
-        _splashAd.loadAd();
-        _rewardAd = new ATRewardVideoAd(_context, _rewardAdPlacementId);
+                @Override
+                public void fail(int code, String msg) {
+                    Log.i(TAG, "fail:  code = " + code + " msg = " + msg);
+                }
+            });
+            sInit = true;
+        }
+    }
+
+    private static TTAdConfig buildConfig(Context context,String appId) {
+
+        return new TTAdConfig.Builder()
+                /**
+                 * 注：需要替换成在媒体平台申请的appID ，切勿直接复制
+                 */
+                .appId(appId)
+//                .appName("APP测试媒体")
+                /**
+                 * 上线前需要关闭debug开关，否则会影响性能
+                 */
+                .debug(false)
+                /**
+                 * 使用聚合功能此开关必须设置为true，默认为false，不会初始化聚合模板，聚合功能会
+                 */
+                .useMediation(true)
+                //.supportMultiProcess(true)  //开启多进程
+                .customController(getTTCustomController()) //如果您需要设置隐私策略请参考该api
+                .build();
+    }
+
+    //函数返回值表示隐私开关开启状态，未重写函数使用默认值
+    private static TTCustomController getTTCustomController(){
+        return new TTCustomController() {
+
+            @Override
+            public boolean isCanUseWifiState() {
+                return super.isCanUseWifiState();
+            }
+
+            @Override
+            public String getMacAddress() {
+                return super.getMacAddress();
+            }
+
+            @Override
+            public boolean isCanUseWriteExternal() {
+                return super.isCanUseWriteExternal();
+            }
+
+            @Override
+            public String getDevOaid() {
+                return super.getDevOaid();
+            }
+
+            @Override
+            public boolean isCanUseAndroidId() {
+                return super.isCanUseAndroidId();
+            }
+
+            @Override
+            public String getAndroidId() {
+                return super.getAndroidId();
+            }
+
+            @Override
+            public MediationPrivacyConfig getMediationPrivacyConfig() {
+                return new MediationPrivacyConfig() {
+
+                    @Override
+                    public boolean isLimitPersonalAds() {
+                        return super.isLimitPersonalAds();
+                    }
+
+                    @Override
+                    public boolean isProgrammaticRecommend() {
+                        return super.isProgrammaticRecommend();
+                    }
+                };
+            }
+
+            @Override
+            public boolean isCanUsePermissionRecordAudio() {
+                return super.isCanUsePermissionRecordAudio();
+            }
+        };
+    }
+
+    public void initAdup(String appId，String rewardAdCodeId) {
+        AdManger.doInit(_context, appId);
+		_rewardAdCodeId = rewardAdCodeId;
+    }
+	
+	public void showRewardAd() {
+        /** 1、创建AdSlot对象 */
+        AdSlot adslot = new AdSlot.Builder()
+                .setCodeId(_rewardAdCodeId)
+                .setOrientation(TTAdConstant.ORIENTATION_VERTICAL)  // ORIENTATION_VERTICAL:竖屏  ORIENTATION_LANDSCAPE: 横屏1
+                .build();
+
+        /** 2、创建TTAdNative对象 */
+        TTAdNative adNativeLoader = TTAdSdk.getAdManager().createAdNative(this);
+
+        /** 3、创建加载、展示监听器 */
+        initListeners();
+
+        /** 4、加载广告 */
+        adNativeLoader.loadRewardVideoAd(adslot, mRewardVideoListener);
+    }
+	
+	 // 广告加载成功后，开始展示广告
+    private void showRewardVideoAd() {
+        if (mTTRewardVideoAd == null) {
+            Log.i("UMAdDemo", "请先加载广告或等待广告加载完毕后再调用show方法");
+            return;
+        }
+        /** 5、设置展示监听器，展示广告 */
+        mTTRewardVideoAd.setRewardAdInteractionListener(mRewardVideoAdInteractionListener);
+        mTTRewardVideoAd.showRewardVideoAd(this);
     }
 
     @Override
     public void pluginInitialize() {
         super.pluginInitialize();
-        // your init code here
         _context = cordova.getContext();
         _activity = cordova.getActivity();
-        //initTaku("a62b013be01931", "c3d0d2a9a9d451b07e62b509659f7c97","b62b0272f8762f");
         addFullScreenContainer();
     }
 
@@ -58,8 +181,8 @@ public class AdManger extends CordovaPlugin {
     @Override
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         Log.d(TAG, String.format("%s is called. Callback ID: %s.", action, callbackContext.getCallbackId()));
-        if (action.equals("initTaku")) {
-            this.initTaku(args.getString(0), args.getString(1), args.getString(2), args.getString(3));
+        if (action.equals("initAdup")) {
+            this.initAdup(args.getString(0), args.getString(1), args.getString(2), args.getString(3));
             callbackContext.success();
             return true;
         } else if (action.equals("requestPermission")) {
@@ -172,11 +295,6 @@ public class AdManger extends CordovaPlugin {
         });
     }
 
-    public void loadSplashAd() {
-        _splashAd.loadAd();
-    }
-
-    public void loadRewardAd() {
         _rewardAd.setAdListener(new ATRewardVideoListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
@@ -225,62 +343,79 @@ public class AdManger extends CordovaPlugin {
         });
         _rewardAd.load();
     }
-
-    public void showSplashAd() {
-        ATSplashAd.entryAdScenario(_splashAdPlacementId, "splash_ad_show_1");
-        setContainerVisiable();
-        _splashAd.show(_activity, _container);
-    }
-
-    public void showRewardAd() {
-        if (_rewardAd.isAdReady()) {
-            _rewardAd.show(_activity);
-        } else {
-            _rewardAd.load();
-        }
-    }
-
-    public int isSplashAdReady() {
-        if (_splashAd.isAdReady())
-            return 1;
-        else
-            return 0;
-    }
-
-    class ATSplashExListenerImpl implements ATSplashAdListener {
-
-        @Override
-        public void onAdLoaded(boolean b) {
-            Log.d(TAG, "onAdLoaded: " + b);
-            showSplashAd();
-        }
-
-        @Override
-        public void onAdLoadTimeout() {
-            Log.d(TAG, "onAdLoadTimeout: ");
-        }
-
-        @Override
-        public void onNoAdError(AdError adError) {
-            Log.d(TAG, "onNoAdError: " + adError.getFullErrorInfo());
-            triggerEvent("SplashAdLoadFailed", adError.getFullErrorInfo());
-        }
-
-        @Override
-        public void onAdShow(ATAdInfo atAdInfo) {
-        }
-
-        @Override
-        public void onAdClick(ATAdInfo atAdInfo) {
-
-        }
-
-        @Override
-        public void onAdDismiss(ATAdInfo atAdInfo, ATSplashAdExtraInfo atSplashAdExtraInfo) {
-            if (_container != null) {
-                _container.removeAllViews();
-                _container.setVisibility(View.GONE);
+	
+	private void initListeners() {
+        this.mRewardVideoListener = new TTAdNative.RewardVideoAdListener() {
+            @Override
+            public void onError(int i, String s) {
+                Log.i("UMAdDemo", "reward load fail: errCode: " + i + ", errMsg: " + s);
+				triggerEvent("RewardAdLoadFailed", adError.getFullErrorInfo());
             }
-        }
+
+            @Override
+            public void onRewardVideoAdLoad(TTRewardVideoAd ttRewardVideoAd) {
+                Log.i("UMAdDemo", "reward load success");
+                mTTRewardVideoAd = ttRewardVideoAd;
+            }
+
+            @Override
+            public void onRewardVideoCached() {
+                Log.i("UMAdDemo", "reward cached success");
+            }
+
+            @Override
+            public void onRewardVideoCached(TTRewardVideoAd ttRewardVideoAd) {
+                Log.i("UMAdDemo", "reward cached success 2");
+                mTTRewardVideoAd = ttRewardVideoAd;
+                showRewardVideoAd();
+            }
+        };
+        this.mRewardVideoAdInteractionListener = new TTRewardVideoAd.RewardAdInteractionListener() {
+            @Override
+            public void onAdShow() {
+                Log.i("UMAdDemo", "reward show");
+				//建议在此回调中下发奖励
+				triggerEvent("RewardAdShow", "rewardad show");
+            }
+
+            @Override
+            public void onAdVideoBarClick() {
+                Log.i("UMAdDemo", "reward click");
+            }
+
+            @Override
+            public void onAdClose() {
+                Log.i("UMAdDemo", "reward close");
+				triggerEvent("RewardAdClose", "rewardad close");
+            }
+
+            @Override
+            public void onVideoComplete() {
+                Log.i("UMAdDemo", "reward onVideoComplete");
+				triggerEvent("RewardAdComplete", "reward onVideoComplete");
+            }
+
+            @Override
+            public void onVideoError() {
+                Log.i("UMAdDemo", "reward onVideoError");
+				triggerEvent("RewardAdError", "reward onVideoError");
+            }
+
+            @Override
+            public void onRewardVerify(boolean b, int i, String s, int i1, String s1) {
+                Log.i("UMAdDemo", "reward onRewardVerify");
+            }
+
+            @Override
+            public void onRewardArrived(boolean isRewardValid, int rewardType, Bundle extraInfo) {
+                Log.i("UMAdDemo", "reward onRewardArrived");
+            }
+
+            @Override
+            public void onSkippedVideo() {
+                Log.i("UMAdDemo", "reward onSkippedVideo");
+				triggerEvent("RewardAdSkip", "reward onSkippedVideo");
+            }
+        };
     }
 }
