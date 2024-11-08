@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns:android="http://schemas.android.com/apk/res/android"
-    id="cordova-plugin-android-adupad" version="1.0.0"
+    id="cordova-plugin-android-adup" version="1.0.0"
     xmlns="http://apache.org/cordova/ns/plugins/1.0">
     <name>AdupAD</name>
     <description>Cordova Plugin for Android,a JS version of AdUp SDK</description>
