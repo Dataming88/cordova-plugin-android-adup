@@ -281,55 +281,6 @@ public class AdManger extends CordovaPlugin {
             }
         });
     }
-
-        _rewardAd.setAdListener(new ATRewardVideoListener() {
-            @Override
-            public void onRewardedVideoAdLoaded() {
-            }
-
-            @Override
-            public void onRewardedVideoAdFailed(AdError adError) {
-                //注意：禁止在此回调中执行广告的加载方法进行重试，否则会引起很多无用请求且可能会导致应用卡顿
-                //AdError，请参考 https://docs.takuad.com/#/zh-cn/android/android_doc/android_test?id=aderror
-                Log.e(TAG, "onRewardedVideoAdFailed:" + adError.getFullErrorInfo());
-                triggerEvent("RewardAdLoadFailed", adError.getFullErrorInfo());
-            }
-
-            @Override
-            public void onRewardedVideoAdPlayStart(ATAdInfo adInfo) {
-                //ATAdInfo可区分广告平台以及获取广告平台的广告位ID等
-                //请参考 https://docs.takuad.com/#/zh-cn/android/android_doc/android_sdk_callback_access?id=callback_info
-
-                //建议在此回调中调用load进行广告的加载，方便下一次广告的展示（不需要调用isAdReady()）
-                _rewardAd.load();
-            }
-
-            @Override
-            public void onRewardedVideoAdPlayEnd(ATAdInfo atAdInfo) {
-            }
-
-            @Override
-            public void onRewardedVideoAdPlayFailed(AdError adError, ATAdInfo atAdInfo) {
-                //AdError，请参考 https://docs.takuad.com/#/zh-cn/android/android_doc/android_test?id=aderror
-                Log.e(TAG, "onRewardedVideoAdPlayFailed:" + adError.getFullErrorInfo());
-            }
-
-            @Override
-            public void onRewardedVideoAdClosed(ATAdInfo atAdInfo) {
-            }
-
-            @Override
-            public void onReward(ATAdInfo atAdInfo) {
-                triggerEvent("RewardAdSuccess", "");
-                //建议在此回调中下发奖励，一般在onRewardedVideoAdClosed之前回调
-            }
-
-            @Override
-            public void onRewardedVideoAdPlayClicked(ATAdInfo atAdInfo) {
-            }
-        });
-        _rewardAd.load();
-    }
 	
 	private void initListeners() {
         this.mRewardVideoListener = new TTAdNative.RewardVideoAdListener() {

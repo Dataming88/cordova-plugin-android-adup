@@ -1,8 +1,8 @@
 {
-    "name": "cordova-plugin-android-adupad",
+    "name": "cordova-plugin-android-adup",
     "version": "1.0.0",
     "cordova": {
-        "id": "cordova-plugin-android-adupad",
+        "id": "cordova-plugin-android-adup",
         "platforms": [
             "android"
         ]

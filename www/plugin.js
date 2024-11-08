@@ -3,16 +3,12 @@ var exec = require("cordova/exec");
 var PLUGIN_NAME = "AdupAd";
 
 var adupAd = {
-    initTaku: function (
+    initAdup: function (
         appId,
-        appKey,
-        splashAdPlacementId,
         rewardAdPlacementId
     ) {
         exec(null, null, "AdupAd", "initAdup", [
             appId,
-            appKey,
-            splashAdPlacementId,
             rewardAdPlacementId,
         ]);
     },
