@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.os.Bundle;
 
 
 import com.bytedance.sdk.openadsdk.TTAdConfig;
@@ -27,17 +28,19 @@ import org.apache.cordova.PluginResult;
 import org.json.JSONException;
 
 public class AdManger extends CordovaPlugin {
-    private static final String TAG = "AdupAd";
+    private static final String TAG = "AdUpManger";
     private Context _context;
     private Activity _activity;
     private FrameLayout _container;
-    private String _splashAdPlacementId;
     private String _rewardAdCodeId;
+    private TTRewardVideoAd mTTRewardVideoAd; // 插全屏广告对象
+    private TTAdNative.RewardVideoAdListener mRewardVideoListener; // 广告加载监听器
+    private TTRewardVideoAd.RewardAdInteractionListener mRewardVideoAdInteractionListener; // 广告展示监听器
 	
 	public static TTAdManager get() {
         return TTAdSdk.getAdManager();
     }
-	
+    private static boolean sInit;
 	private static void doInit(Context context,String appId) {
         if (!sInit) {
             //setp1.1：初始化SDK
@@ -136,7 +139,7 @@ public class AdManger extends CordovaPlugin {
         };
     }
 
-    public void initAdup(String appId，String rewardAdCodeId) {
+    public void initAdup(String appId,String rewardAdCodeId) {
         AdManger.doInit(_context, appId);
 		_rewardAdCodeId = rewardAdCodeId;
     }
@@ -149,7 +152,7 @@ public class AdManger extends CordovaPlugin {
                 .build();
 
         /** 2、创建TTAdNative对象 */
-        TTAdNative adNativeLoader = TTAdSdk.getAdManager().createAdNative(this);
+        TTAdNative adNativeLoader = TTAdSdk.getAdManager().createAdNative(_context);
 
         /** 3、创建加载、展示监听器 */
         initListeners();
@@ -166,7 +169,7 @@ public class AdManger extends CordovaPlugin {
         }
         /** 5、设置展示监听器，展示广告 */
         mTTRewardVideoAd.setRewardAdInteractionListener(mRewardVideoAdInteractionListener);
-        mTTRewardVideoAd.showRewardVideoAd(this);
+        mTTRewardVideoAd.showRewardVideoAd(_activity);
     }
 
     @Override
@@ -182,7 +185,7 @@ public class AdManger extends CordovaPlugin {
     public boolean execute(String action, CordovaArgs args, CallbackContext callbackContext) throws JSONException {
         Log.d(TAG, String.format("%s is called. Callback ID: %s.", action, callbackContext.getCallbackId()));
         if (action.equals("initAdup")) {
-            this.initAdup(args.getString(0), args.getString(1), args.getString(2), args.getString(3));
+            this.initAdup(args.getString(0), args.getString(1));
             callbackContext.success();
             return true;
         } else if (action.equals("requestPermission")) {
@@ -190,15 +193,15 @@ public class AdManger extends CordovaPlugin {
             callbackContext.success();
             return true;
         } else if (action.equals("loadSplashAd")) {
-            this.loadSplashAd();
+//            this.loadSplashAd();
             callbackContext.success();
             return true;
         } else if (action.equals("showSplashAd")) {
-            this.showSplashAd();
+//            this.showSplashAd();
             callbackContext.success();
             return true;
         } else if (action.equals("loadRewardAd")) {
-            this.loadRewardAd();
+//            this.loadRewardAd();
             callbackContext.success();
             return true;
         } else if (action.equals("showRewardAd")) {
@@ -206,7 +209,7 @@ public class AdManger extends CordovaPlugin {
             callbackContext.success();
             return true;
         } else if (action.equals("isSplashAdReady")) {
-            callbackContext.success(this.isSplashAdReady());
+//            callbackContext.success(this.isSplashAdReady());
             return true;
         }
 
