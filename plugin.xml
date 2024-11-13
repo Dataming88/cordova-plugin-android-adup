@@ -46,16 +46,6 @@
 
             
             <provider
-            android:name="com.sigmob.sdk.SigmobFileV4Provider"
-            android:authorities="$PACKAGE_NAME.sigprovider"
-            android:exported="false"
-            android:initOrder="200"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/anythink_bk_sigmob_file_path"/>
-            </provider>
-            <provider
                 android:name="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider"
                 android:authorities="$PACKAGE_NAME.TTMultiProvider"
                 android:exported="false" />
@@ -68,17 +58,6 @@
                     android:name="android.support.FILE_PROVIDER_PATHS"
                     android:resource="@xml/anythink_bk_tt_file_path" />
             </provider>
-
-            <provider
-                android:name="com.tencent.klevin.utils.FileProvider"
-                android:authorities="$PACKAGE_NAME.klevin.fileProvider"
-                android:exported="false"
-                android:grantUriPermissions="true">
-                <meta-data
-                    android:name="android.support.FILE_PROVIDER_PATHS"
-                    android:resource="@xml/anythink_bk_klevin_file_path"/>
-            </provider>
-
             <provider
                 android:name="com.qq.e.comm.GDTFileProvider"
                 android:authorities="$PACKAGE_NAME.gdt.fileprovider"
