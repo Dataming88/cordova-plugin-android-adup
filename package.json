@@ -1,6 +1,6 @@
 {
     "name": "cordova-plugin-android-adup",
-    "version": "1.0.1",
+    "version": "1.0.5",
     "cordova": {
         "id": "cordova-plugin-android-adup",
         "platforms": [
