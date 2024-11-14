@@ -15,21 +15,9 @@ var adupAd = {
     requestPermission: function () {
         exec(null, null, "AdupAd", "requestPermission", []);
     },
-    loadSplashAd: function () {
-        exec(null, null, "AdupAd", "loadSplashAd", []);
-    },
-    showSplashAd: function () {
-        exec(null, null, "AdupAd", "showSplashAd", []);
-    },
-    loadRewardAd: function () {
-        exec(null, null, "AdupAd", "loadRewardAd", []);
-    },
     showRewardAd: function () {
         exec(null, null, "AdupAd", "showRewardAd", []);
-    },
-    isSplashAdReady: function () {
-        exec(null, null, "AdupAd", "isSplashAdReady", []);
-    },
+    }
 };
 
 module.exports = adupAd;
