@@ -80,10 +80,6 @@
             target="res/xml/network_security_config.xml" />
         <resource-file src="src/android/res/xml/anythink_bk_gdt_file_path.xml"
             target="res/xml/anythink_bk_gdt_file_path.xml" />
-        <resource-file src="src/android/res/xml/anythink_bk_klevin_file_path.xml"
-            target="res/xml/anythink_bk_klevin_file_path.xml" />
-        <resource-file src="src/android/res/xml/anythink_bk_sigmob_file_path.xml"
-            target="res/xml/anythink_bk_sigmob_file_path.xml" />
         <resource-file src="src/android/res/xml/anythink_bk_tt_file_path.xml"
             target="res/xml/anythink_bk_tt_file_path.xml" />
         <framework src="android-build.gradle" custom="true" type="gradleReference" />
