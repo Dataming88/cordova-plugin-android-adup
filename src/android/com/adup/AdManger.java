@@ -33,7 +33,7 @@ public class AdManger extends CordovaPlugin {
     private Activity _activity;
     private FrameLayout _container;
     private String _rewardAdCodeId;
-    private TTRewardVideoAd mTTRewardVideoAd; // 插全屏广告对象
+    private TTRewardVideoAd mTTRewardVideoAd;
     private TTAdNative.RewardVideoAdListener mRewardVideoListener; // 广告加载监听器
     private TTRewardVideoAd.RewardAdInteractionListener mRewardVideoAdInteractionListener; // 广告展示监听器
 	
@@ -192,33 +192,15 @@ public class AdManger extends CordovaPlugin {
             this.requestPermission();
             callbackContext.success();
             return true;
-        } else if (action.equals("loadSplashAd")) {
-//            this.loadSplashAd();
-            callbackContext.success();
-            return true;
-        } else if (action.equals("showSplashAd")) {
-//            this.showSplashAd();
-            callbackContext.success();
-            return true;
-        } else if (action.equals("loadRewardAd")) {
-//            this.loadRewardAd();
-            callbackContext.success();
-            return true;
-        } else if (action.equals("showRewardAd")) {
+        }  else if (action.equals("showRewardAd")) {
             this.showRewardAd();
             callbackContext.success();
             return true;
-        } else if (action.equals("isSplashAdReady")) {
-//            callbackContext.success(this.isSplashAdReady());
-            return true;
         }
-
-
         return false;
     }
 
     private void requestPermission() {
-
         cordova.requestPermissions(this, 100, new String[]{
                 Manifest.permission.READ_PHONE_STATE,
         });
@@ -234,7 +216,6 @@ public class AdManger extends CordovaPlugin {
                         // 权限授予了
                         if (Manifest.permission.READ_PHONE_STATE.equals(permissions[i])) {
                             Log.d(TAG, "onRequestPermissionsResult: READ_PHONE_STATE GRANTED");
-
                         }
 
                     } else {
@@ -242,7 +223,6 @@ public class AdManger extends CordovaPlugin {
                         if (Manifest.permission.READ_PHONE_STATE.equals(permissions[i])) {
                             Log.d(TAG, "onRequestPermissionsResult: READ_PHONE_STATE REFUSED");
                         }
-
                     }
                 }
                 break;
@@ -270,7 +250,6 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void run() {
                 _container = new FrameLayout(_activity);
-
                 // 设置 LayoutParams 为全屏
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
@@ -290,7 +269,7 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onError(int i, String s) {
                 Log.i("UMAdDemo", "reward load fail: errCode: " + i + ", errMsg: " + s);
-				triggerEvent("RewardAdLoadFailed", "reward load fail: errCode: " + i + ", errMsg: " + s);
+		triggerEvent("RewardAdLoadFailed", "reward load fail: errCode: " + i + ", errMsg: " + s);
             }
 
             @Override
@@ -315,8 +294,8 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onAdShow() {
                 Log.i("UMAdDemo", "reward show");
-				//建议在此回调中下发奖励
-				triggerEvent("RewardAdSuccess", "rewardad show");
+		//建议在此回调中下发奖励
+		triggerEvent("RewardAdSuccess", "rewardad show");
             }
 
             @Override
@@ -328,19 +307,19 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onAdClose() {
                 Log.i("UMAdDemo", "reward close");
-				triggerEvent("RewardAdClose", "reward ad close");
+		triggerEvent("RewardAdClose", "reward ad close");
             }
 
             @Override
             public void onVideoComplete() {
                 Log.i("UMAdDemo", "reward onVideoComplete");
-				triggerEvent("RewardAdComplete", "reward ad VideoComplete");
+		triggerEvent("RewardAdComplete", "reward ad VideoComplete");
             }
 
             @Override
             public void onVideoError() {
                 Log.i("UMAdDemo", "reward onVideoError");
-				triggerEvent("RewardAdError", "reward onVideoError");
+		triggerEvent("RewardAdError", "reward onVideoError");
             }
 
             @Override
@@ -356,7 +335,7 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onSkippedVideo() {
                 Log.i("UMAdDemo", "reward onSkippedVideo");
-				triggerEvent("RewardAdSkipped", "reward ad Skipped");
+		triggerEvent("RewardAdSkipped", "reward ad Skipped");
             }
         };
     }
