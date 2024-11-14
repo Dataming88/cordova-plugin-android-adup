@@ -316,24 +316,25 @@ public class AdManger extends CordovaPlugin {
             public void onAdShow() {
                 Log.i("UMAdDemo", "reward show");
 				//建议在此回调中下发奖励
-				triggerEvent("RewardAdShow", "rewardad show");
+				triggerEvent("RewardAdSuccess", "rewardad show");
             }
 
             @Override
             public void onAdVideoBarClick() {
                 Log.i("UMAdDemo", "reward click");
+                triggerEvent("RewardAdBarClick", "rewardad click");
             }
 
             @Override
             public void onAdClose() {
                 Log.i("UMAdDemo", "reward close");
-				triggerEvent("RewardAdClose", "rewardad close");
+				triggerEvent("RewardAdClose", "reward ad close");
             }
 
             @Override
             public void onVideoComplete() {
                 Log.i("UMAdDemo", "reward onVideoComplete");
-				triggerEvent("RewardAdComplete", "reward onVideoComplete");
+				triggerEvent("RewardAdComplete", "reward ad VideoComplete");
             }
 
             @Override
@@ -355,7 +356,7 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onSkippedVideo() {
                 Log.i("UMAdDemo", "reward onSkippedVideo");
-				triggerEvent("RewardAdSkip", "reward onSkippedVideo");
+				triggerEvent("RewardAdSkipped", "reward ad Skipped");
             }
         };
     }
