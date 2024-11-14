@@ -64,20 +64,12 @@ public class AdManger extends CordovaPlugin {
     private static TTAdConfig buildConfig(Context context,String appId) {
 
         return new TTAdConfig.Builder()
-                /**
-                 * 注：需要替换成在媒体平台申请的appID ，切勿直接复制
-                 */
+
                 .appId(appId)
-//                .appName("APP测试媒体")
-                /**
-                 * 上线前需要关闭debug开关，否则会影响性能
-                 */
+
                 .debug(false)
-                /**
-                 * 使用聚合功能此开关必须设置为true，默认为false，不会初始化聚合模板，聚合功能会
-                 */
+
                 .useMediation(true)
-                //.supportMultiProcess(true)  //开启多进程
                 .customController(getTTCustomController()) //如果您需要设置隐私策略请参考该api
                 .build();
     }
@@ -236,21 +228,11 @@ public class AdManger extends CordovaPlugin {
         webView.getEngine().evaluateJavascript(js, null);
     }
 
-    private void setContainerVisiable() {
-        _activity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                _container.setVisibility(View.VISIBLE);
-            }
-        });
-    }
-
     private void addFullScreenContainer() {
         _activity.runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 _container = new FrameLayout(_activity);
-                // 设置 LayoutParams 为全屏
                 FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                         FrameLayout.LayoutParams.MATCH_PARENT,
                         FrameLayout.LayoutParams.MATCH_PARENT
@@ -269,7 +251,7 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onError(int i, String s) {
                 Log.i("UMAdDemo", "reward load fail: errCode: " + i + ", errMsg: " + s);
-		triggerEvent("RewardAdLoadFailed", "reward load fail: errCode: " + i + ", errMsg: " + s);
+				triggerEvent("RewardAdLoadFailed", "reward load fail: errCode: " + i + ", errMsg: " + s);
             }
 
             @Override
@@ -294,8 +276,8 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onAdShow() {
                 Log.i("UMAdDemo", "reward show");
-		//建议在此回调中下发奖励
-		triggerEvent("RewardAdSuccess", "rewardad show");
+				//建议在此回调中下发奖励
+				triggerEvent("RewardAdSuccess", "rewardad show");
             }
 
             @Override
@@ -307,19 +289,19 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onAdClose() {
                 Log.i("UMAdDemo", "reward close");
-		triggerEvent("RewardAdClose", "reward ad close");
+				triggerEvent("RewardAdClose", "reward ad close");
             }
 
             @Override
             public void onVideoComplete() {
                 Log.i("UMAdDemo", "reward onVideoComplete");
-		triggerEvent("RewardAdComplete", "reward ad VideoComplete");
+				triggerEvent("RewardAdComplete", "reward ad VideoComplete");
             }
 
             @Override
             public void onVideoError() {
                 Log.i("UMAdDemo", "reward onVideoError");
-		triggerEvent("RewardAdError", "reward onVideoError");
+				triggerEvent("RewardAdError", "reward onVideoError");
             }
 
             @Override
@@ -335,7 +317,7 @@ public class AdManger extends CordovaPlugin {
             @Override
             public void onSkippedVideo() {
                 Log.i("UMAdDemo", "reward onSkippedVideo");
-		triggerEvent("RewardAdSkipped", "reward ad Skipped");
+				triggerEvent("RewardAdSkipped", "reward ad Skipped");
             }
         };
     }

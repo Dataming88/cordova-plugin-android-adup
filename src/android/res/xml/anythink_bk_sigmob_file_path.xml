@@ -1,4 +1,0 @@
-<paths>
-    <external-cache-path name="SigMob_root" path="SigDownload" />
-    <root-path name="SigMob_root_external" path="." />
-</paths>

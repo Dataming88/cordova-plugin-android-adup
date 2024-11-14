@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <plugin xmlns:android="http://schemas.android.com/apk/res/android"
-    id="cordova-plugin-android-adup" version="1.0.9"
+    id="cordova-plugin-android-adup" version="1.1.0"
     xmlns="http://apache.org/cordova/ns/plugins/1.0">
     <name>AdupAD</name>
     <description>Cordova Plugin for Android,a JS version of AdUp SDK</description>
@@ -43,8 +43,6 @@
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <uses-library android:name="org.apache.http.legacy" android:required="false"/>
             <meta-data tools:replace="android:value" android:name="hw_ads_sdk_type" android:value="6" />
-
-            
             <provider
                 android:name="com.bytedance.sdk.openadsdk.multipro.TTMultiProvider"
                 android:authorities="$PACKAGE_NAME.TTMultiProvider"
