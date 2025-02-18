@@ -33,12 +33,6 @@
             <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
             <uses-permission android:name="android.permission.GET_TASKS" />
             <uses-permission android:name="android.permission.WAKE_LOCK" />
-            <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-            <uses-permission android:name="android.permission.INTERNET" />
-            <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-            <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-            <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-            <uses-permission android:name="android.permission.READ_PHONE_STATE" />
         </config-file>
         <config-file target="AndroidManifest.xml" parent="/manifest/application">
             <uses-library android:name="org.apache.http.legacy" android:required="false"/>
@@ -67,11 +61,13 @@
             </provider>
         </config-file>
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest">
-            <manifest xmlns:tools="http://schemas.android.com/tools"/>
+              <manifest xmlns:tools="http://schemas.android.com/tools"/>
         </edit-config>
+
         <edit-config file="AndroidManifest.xml" mode="merge" target="/manifest/application">
-            <application android:allowBackup="true" tools:replace="android:allowBackup" android:networkSecurityConfig="@xml/network_security_config" />
+             <application android:allowBackup="true" tools:replace="android:allowBackup,android:networkSecurityConfig" android:networkSecurityConfig="@xml/network_security_config" />
         </edit-config>
+
         <source-file src="src/android/com/adup/AdManger.java" target-dir="src/com/adup"/>
         <resource-file src="src/android/libs/" target="libs"/>
         <resource-file src="src/android/res/xml/network_security_config.xml"
